@@ -1,6 +1,7 @@
 export const Types = {
   ADD_REQUEST: "users/ADD_REQUEST",
-  ADD_SUCCESS: "users/ADD_SUCCESS"
+  ADD_SUCCESS: "users/ADD_SUCCESS",
+  REMOVE: "users/REMOVE"
 };
 
 const INITIAL_STATE = {
@@ -20,19 +21,29 @@ export default function users(state = INITIAL_STATE, action) {
         loading: false,
         users: [action.payload.data, ...state.users]
       };
+    case Types.REMOVE:
+      return {
+        ...state,
+        users: state.users.filter(user => user.id !== action.payload.id)
+      };
     default:
       return state;
   }
 }
 
 export const Creators = {
-  addUserRequest: user => ({
+  addUserRequest: (user, lngLat) => ({
     type: Types.ADD_REQUEST,
-    payload: { user }
+    payload: { user, lngLat }
   }),
 
   addUserSuccess: data => ({
     type: Types.ADD_SUCCESS,
     payload: { data }
+  }),
+
+  removeUser: id => ({
+    type: Types.REMOVE,
+    payload: { id }
   })
 };

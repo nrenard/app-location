@@ -1,7 +1,8 @@
 import { call, put, select } from "redux-saga/effects";
 import api from "../../services/api";
 
-import { Creators } from "../ducks/users";
+import { Creators as UsersCreators } from "../ducks/users";
+import { Creators as ModalCreators } from "../ducks/modal";
 
 export function* addUser(action) {
   try {
@@ -11,8 +12,21 @@ export function* addUser(action) {
       state.users.users.find(user => user.id === data.id)
     );
 
+    const user = {
+      id: data.id,
+      img: data.avatar_url,
+      login: data.login,
+      url: data.html_url,
+      name: data.name,
+      lngLat: action.payload.lngLat
+    };
+
     if (!isDuplicated) {
-      yield put(Creators.addUserSuccess(data));
+      yield put(UsersCreators.addUserSuccess(user));
     }
   } catch (err) {}
+}
+
+export function* addUserSuccess() {
+  yield put(ModalCreators.closedModal());
 }

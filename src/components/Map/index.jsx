@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import ReactMapGL, { NavigationControl } from "react-map-gl";
+import ReactMapGL, { NavigationControl, Marker } from "react-map-gl";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { Creators } from "../../store/ducks/modal";
 
-import { Container, Controlls } from "./styles";
+import { Container, Controlls, UserImages } from "./styles";
 
 const Token =
   "pk.eyJ1IjoibnJlbmFyZDE5OTkiLCJhIjoiY2pwancxZmEzMDlndTN3b2NncmR1amNndCJ9.8xEz08jm-gc5S9fTzsxqjQ";
@@ -27,15 +27,16 @@ class Map extends Component {
   };
 
   handleClickMap = details => {
-    console.log("details: ", details);
+    this.props.openModal(details.lngLat);
+  };
 
-    this.props.openModal();
+  newWindowMyFrieeeeend = link => {
+    window.open(link, "_blank");
   };
 
   render() {
     const { viewport } = this.state;
-
-    console.log("this.props: ", this.props);
+    const { users } = this.props.users;
 
     return (
       <Container>
@@ -43,7 +44,7 @@ class Map extends Component {
           {...viewport}
           onViewportChange={viewport => this.setState({ viewport })}
           mapboxApiAccessToken={Token}
-          mapStyle="mapbox://styles/mapbox/dark-v9"
+          // mapStyle="mapbox://styles/mapbox/dark-v9"
           onClick={this.handleClickMap}
         >
           <Controlls>
@@ -52,6 +53,22 @@ class Map extends Component {
               onViewStateChange={this.handleChangeZoom}
             />
           </Controlls>
+
+          {users.map(user => (
+            <Marker
+              longitude={user.lngLat[0]}
+              latitude={user.lngLat[1]}
+              offsetTop={0}
+              offsetLeft={0}
+              key={user.id}
+            >
+              <UserImages onClick={() => this.newWindowMyFrieeeeend(user.url)}>
+                <a href={user.link} target="_blank">
+                  <img src={user.img} alt={user.name} />
+                </a>
+              </UserImages>
+            </Marker>
+          ))}
         </ReactMapGL>
       </Container>
     );
@@ -59,7 +76,6 @@ class Map extends Component {
 }
 
 const mapStateToProps = state => ({
-  modal: state.modal,
   users: state.users
 });
 

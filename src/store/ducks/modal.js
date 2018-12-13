@@ -4,7 +4,8 @@ export const Types = {
 };
 
 const INITIAL_STATE = {
-  modal: false
+  modal: false,
+  lngLat: null
 };
 
 export default function modal(state = INITIAL_STATE, action) {
@@ -12,13 +13,15 @@ export default function modal(state = INITIAL_STATE, action) {
     case Types.OPEN_MODAL:
       return {
         ...state,
-        modal: true
+        modal: true,
+        lngLat: action.payload.lngLat
       };
 
     case Types.CLOSED_MODAL:
       return {
         ...state,
-        modal: false
+        modal: false,
+        lngLat: null
       };
 
     default:
@@ -27,9 +30,9 @@ export default function modal(state = INITIAL_STATE, action) {
 }
 
 export const Creators = {
-  openModal: () => ({
+  openModal: lngLat => ({
     type: Types.OPEN_MODAL,
-    payload: null
+    payload: { lngLat }
   }),
   closedModal: () => ({
     type: Types.CLOSED_MODAL,
